@@ -10,12 +10,12 @@ import {
     FlatList,
 } from "react-native";
 import { Icon } from "react-native-elements";
+import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-
 import { colors, parameters } from "../global/styles";
-
 import { filterData } from "../global/data";
+import { mapStyle } from "../global/mapStyle";
 
 const HomeScreen = () => {
     return (
@@ -152,6 +152,14 @@ const HomeScreen = () => {
                 </View>
 
                 <Text style={styles.text4}> Around you</Text>
+
+                <View
+                    style={{ alignItems: "center", justifyContent: "center" }}>
+                    <MapView
+                        provider="PROVIDER_GOOGLE"
+                        style={styles.map}
+                        customMapStyle={mapStyle}></MapView>
+                </View>
             </ScrollView>
             <StatusBar
                 style="light"
