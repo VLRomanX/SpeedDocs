@@ -1,14 +1,10 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
 
-import HomeScreen from "./src/screen/HomeScreen";
+import RootNavigator from "./src/navigations/RootNavigator";
 
 const App = () => {
-    return (
-        <View style={styles.container}>
-            <HomeScreen />
-        </View>
-    );
+    return <RootNavigator />;
 };
 
 export default App;

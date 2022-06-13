@@ -8,6 +8,7 @@ import {
     ScrollView,
     Image,
     FlatList,
+    TouchableOpacity,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
@@ -18,7 +19,7 @@ import { colors, parameters } from "../global/styles";
 import { filterData, carsAround } from "../global/data";
 import { mapStyle } from "../global/mapStyle";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
     const [latlng, setLatLng] = useState({});
 
     const checkPermission = async () => {
@@ -77,11 +78,16 @@ const HomeScreen = () => {
                             <Text style={styles.text2}>
                                 Read a book. Take a nap. Do not waste your time
                             </Text>
-                            <View style={styles.button1}>
-                                <Text style={styles.button1Text}>
-                                    Use SpeedDocs
-                                </Text>
-                            </View>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    navigation.navigate("RequestScreen");
+                                }}>
+                                <View style={styles.button1}>
+                                    <Text style={styles.button1Text}>
+                                        Use SpeedDocs
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                         <View>
                             <Image
