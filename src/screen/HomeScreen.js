@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     StyleSheet,
     Text,
@@ -11,13 +11,52 @@ import {
 } from "react-native";
 import { Icon } from "react-native-elements";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
+import * as Location from "expo-location";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 import { colors, parameters } from "../global/styles";
-import { filterData } from "../global/data";
+import { filterData, carsAround } from "../global/data";
 import { mapStyle } from "../global/mapStyle";
 
 const HomeScreen = () => {
+    const [latlng, setLatLng] = useState({});
+
+    const checkPermission = async () => {
+        const hasPermission =
+            await Location.requestForegroundPermissionsAsync();
+        if (hasPermission.status === "granted") {
+            const permission = await askPermission();
+            return permission;
+        }
+        return true;
+    };
+
+    const askPermission = async () => {
+        const permission = await Location.requestForegroundPermissionsAsync();
+        return permission.status === "granted";
+    };
+
+    const getLocation = async () => {
+        try {
+            const { granted } =
+                await Location.requestForegroundPermissionsAsync();
+            if (!granted) return;
+            const {
+                coords: { latitude, longitude },
+            } = await Location.getCurrentPositionAsync();
+            setLatLng({ latitude: latitude, longitude: longitude });
+        } catch (err) {}
+    };
+
+    const _map = useRef(1);
+
+    useEffect(() => {
+        checkPermission();
+        getLocation(),
+            // console.log(latlng)
+            [];
+    });
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -36,11 +75,11 @@ const HomeScreen = () => {
                     <View style={styles.view1}>
                         <View style={styles.view8}>
                             <Text style={styles.text2}>
-                                Read a book. Take a nap. Stare out the window
+                                Read a book. Take a nap. Do not waste your time
                             </Text>
                             <View style={styles.button1}>
                                 <Text style={styles.button1Text}>
-                                    Ride with Uber
+                                    Use SpeedDocs
                                 </Text>
                             </View>
                         </View>
@@ -156,9 +195,32 @@ const HomeScreen = () => {
                 <View
                     style={{ alignItems: "center", justifyContent: "center" }}>
                     <MapView
-                        provider="PROVIDER_GOOGLE"
+                        ref={_map}
+                        provider={PROVIDER_GOOGLE}
                         style={styles.map}
-                        customMapStyle={mapStyle}></MapView>
+                        customMapStyle={mapStyle}
+                        showsUserLocation={true}
+                        followsUserLocation={true}
+                        rotateEnabled={true}
+                        zoomEnabled={true}
+                        toolbarEnabled={true}
+                        initialRegion={{
+                            ...carsAround[1],
+                            latitudeDelta: 0.008,
+                            longitudeDelta: 0.008,
+                        }}>
+                        {carsAround.map((item, index) => (
+                            <MapView.Marker
+                                coordinate={item}
+                                key={index.toString()}>
+                                <Image
+                                    source={require("../../assets/carMarker.png")}
+                                    style={styles.carsAround}
+                                    resizeMode="cover"
+                                />
+                            </MapView.Marker>
+                        ))}
+                    </MapView>
                 </View>
             </ScrollView>
             <StatusBar

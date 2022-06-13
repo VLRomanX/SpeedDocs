@@ -134,9 +134,9 @@ export const availableServices = [
 ];
 
 export const carsAround = [
-    { latitude: -26.207487, longitude: 28.236226 },
-    { latitude: -26.202616, longitude: 28.227718 },
-    { latitude: -26.202424, longitude: 28.236612 },
-    { latitude: -26.208565, longitude: 28.237191 },
-    { latitude: -26.203598, longitude: 28.239509 },
+    { latitude: -23.4946, longitude: -51.780861 },
+    { latitude: -23.486973, longitude: -51.796034 },
+    { latitude: -23.485949, longitude: -51.796431 },
+    { latitude: -23.486048, longitude: -51.795004 },
+    { latitude: -23.487474, longitude: -51.795017 },
 ];
