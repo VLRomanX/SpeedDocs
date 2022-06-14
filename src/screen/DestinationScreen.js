@@ -1,11 +1,128 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useRef, useContext, useState } from "react";
+import {
+    StyleSheet,
+    Text,
+    View,
+    Dimensions,
+    TouchableOpacity,
+} from "react-native";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { Avatar, Icon } from "react-native-elements";
+import { colors, parameters } from "../global/styles";
+import { GOOGLE_MAPS_APIKEY } from "@env";
+import { OriginContext, DestinationContext } from "../contexts/contexts";
 
-const DestinationScreen = () => {
+const SCREEN_HEIGHT = Dimensions.get("window").height;
+const SCREEN_WIDTH = Dimensions.get("window").width;
+
+navigator.geolocation = require("react-native-geolocation-service");
+
+const DestinationScreen = ({ navigation }) => {
+    const { dispatchOrigin } = useContext(OriginContext);
+    const { dispatchDestination } = useContext(DestinationContext);
+
+    const textInput1 = useRef(4);
+    const textInput2 = useRef(5);
+
+    const [destination, setDestination] = useState(false);
+
     return (
-        <View>
-            <Text>Destination</Text>
-        </View>
+        <>
+            <View style={styles.view2}>
+                <View style={styles.view1}>
+                    <Icon
+                        type="material-community"
+                        name="arrow-left"
+                        color={colors.grey1}
+                        size={32}
+                        onPress={() => navigation.goBack()}
+                    />
+                </View>
+                <TouchableOpacity>
+                    <View style={{ top: 25, alignItems: "center" }}>
+                        <View style={styles.view3}>
+                            <Avatar
+                                rounded
+                                avatarStyle={{}}
+                                size={30}
+                                source={require("../../assets/blankProfilePic.jpg")}
+                            />
+                            <Text style={{ marginLeft: 5 }}>For Someone</Text>
+                            <Icon
+                                type="material-community"
+                                name="chevron-down"
+                                color={colors.grey1}
+                                size={26}
+                            />
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            {destination === false && (
+                <GooglePlacesAutocomplete
+                    nearbyPlacesAPI="GooglePlacesSearch"
+                    placeholder="From..."
+                    listViewDisplayed="auto"
+                    debounce={400}
+                    currentLocation={true}
+                    ref={textInput1}
+                    minLength={2}
+                    enablePoweredByContainer={false}
+                    fetchDetails={true}
+                    autoFocus={true}
+                    style={autoComplete}
+                    query={{
+                        key: GOOGLE_MAPS_APIKEY,
+                        language: "en",
+                    }}
+                    onPress={(data, details = null) => {
+                        dispatchOrigin({
+                            type: "ADD_ORIGIN",
+                            payload: {
+                                latitude: details.geometry.location.lat,
+                                longitude: details.geometry.location.lng,
+                                address: details.formatted_address,
+                                name: details.name,
+                            },
+                        });
+
+                        setDestination(true);
+                    }}
+                />
+            )}
+            {destination === true && (
+                <GooglePlacesAutocomplete
+                    nearbyPlacesAPI="GooglePlacesSearch"
+                    placeholder="Going to..."
+                    listViewDisplayed="auto"
+                    debounce={400}
+                    currentLocation={true}
+                    ref={textInput2}
+                    minLength={2}
+                    enablePoweredByContainer={false}
+                    fetchDetails={true}
+                    autoFocus={true}
+                    style={autoComplete}
+                    query={{
+                        key: GOOGLE_MAPS_APIKEY,
+                        language: "en",
+                    }}
+                    onPress={(data, details = null) => {
+                        dispatchDestination({
+                            type: "ADD_DESTINATION",
+                            payload: {
+                                latitude: details.geometry.location.lat,
+                                longitude: details.geometry.location.lng,
+                                address: details.formatted_address,
+                                name: details.name,
+                            },
+                        });
+
+                        navigation.goBack();
+                    }}
+                />
+            )}
+        </>
     );
 };
 
@@ -13,7 +130,7 @@ export default DestinationScreen;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",

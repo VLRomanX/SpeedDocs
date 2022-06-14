@@ -6,16 +6,39 @@ import {
     Dimensions,
     TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Avatar, Icon } from "react-native-elements";
 import { colors, parameters } from "../global/styles";
 import MapComponent from "../components/MapComponent";
-import { TestIntegrityLevel } from "es-abstract";
+import { OriginContext, DestinationContext } from "../contexts/contexts";
 
 const SCREEN_HEIGHT = Dimensions.get("window").height;
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default function RequestScreen() {
+export default function RequestScreen({ navigation }) {
+    const { origin, dispatchOrigin } = useContext(OriginContext);
+    const [userOrigin, setUserOrigin] = useState({
+        latitude: origin.latitude,
+        longitude: origin.longitude,
+    });
+
+    const { destination, dispatchDestination } = useContext(DestinationContext);
+    const [userDestination, setUserDestination] = useState({
+        latitude: destination.latitude,
+        longitude: destination.longitude,
+    });
+
+    useEffect(() => {
+        setUserOrigin({
+            latitude: origin.latitude,
+            longitude: origin.longitude,
+        });
+        setUserDestination({
+            latitude: destination.latitude,
+            longitude: destination.longitude,
+        });
+    }, [origin, destination]);
+
     return (
         <View style={styles.container}>
             <View style={styles.view1}>
@@ -52,9 +75,14 @@ export default function RequestScreen() {
                         />
                     </View>
                     <View>
-                        <View style={styles.view6}>
-                            <Text style={styles.text1}>From where?</Text>
-                        </View>
+                        <TouchableOpacity
+                            onPress={() =>
+                                navigation.navigate("DestinationScreen")
+                            }>
+                            <View style={styles.view6}>
+                                <Text style={styles.text1}>From where?</Text>
+                            </View>
+                        </TouchableOpacity>
                         <View style={styles.view7}>
                             <TouchableOpacity>
                                 <View style={styles.view5}>
@@ -73,7 +101,10 @@ export default function RequestScreen() {
                     </View>
                 </View>
             </View>
-            <MapComponent />
+            <MapComponent
+                userOrigin={userOrigin}
+                userDestination={userDestination}
+            />
         </View>
     );
 }
