@@ -4,6 +4,7 @@ import { mapStyle } from "../global/mapStyle";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 import { colors, parameters } from "../global/styles";
 import { GOOGLE_MAPS_APIKEY } from "@env";
+import MapViewDirections from "react-native-maps-directions";
 
 export default class MapComponent extends Component {
     constructor() {
@@ -62,6 +63,15 @@ export default class MapComponent extends Component {
                                 resizeMode="cover"
                             />
                         </MapView.Marker>
+                    )}
+                    {this.props.userDestination.latitude !== null && (
+                        <MapViewDirections
+                            origin={this.props.userOrigin}
+                            destination={this.props.userDestination}
+                            apikey={GOOGLE_MAPS_APIKEY}
+                            strokeWidth={4}
+                            strokeColor={colors.black}
+                        />
                     )}
                 </MapView>
             </View>

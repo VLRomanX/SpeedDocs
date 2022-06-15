@@ -22,6 +22,14 @@ export default function DrawerNavigator() {
                             size={size}
                         />
                     ),
+                    drawerIcon: ({ focussed, size }) => (
+                        <Icon
+                            type="material-community"
+                            name="home"
+                            color={focussed ? "#7cc" : colors.grey2}
+                            size={size}
+                        />
+                    ),
                     headerShown: false,
                 }}
             />
